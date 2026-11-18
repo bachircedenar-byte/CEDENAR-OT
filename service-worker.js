@@ -15,6 +15,9 @@
 const SW_VERSION = 'cedenar-ot-v2.10-web';
 const RUNTIME_CACHE = `runtime-${SW_VERSION}`;
 const STATIC_CACHE = `static-${SW_VERSION}`;
+/* Cache aparte para los binarios reconstruidos: evita que el precache
+   (que no encuentra los archivos reales en este repositorio) los mezcla. */
+const BIN_CACHE = `bin-${SW_VERSION}`;
 
 /* Lista cerrada de archivos del shell (cachear al instalar). */
 const PRECACHE_URLS = [
@@ -114,7 +117,7 @@ self.addEventListener('activate', (event) => {
 
 /* Sirve un binario reconstruido desde su versión en Base64 */
 async function servirDesdeBase64(req, ruta) {
-  const cache = await caches.open(STATIC_CACHE);
+  const cache = await caches.open(BIN_CACHE);
   const guardado = await cache.match(req);
   if (guardado) return guardado;
   try {
@@ -139,7 +142,7 @@ async function servirDesdeBase64(req, ruta) {
 
 /* Sirve un archivo de texto armándolo con sus trozos */
 async function servirDesdePartes(req, ruta) {
-  const cache = await caches.open(STATIC_CACHE);
+  const cache = await caches.open(BIN_CACHE);
   const guardado = await cache.match(req);
   if (guardado) return guardado;
   try {
